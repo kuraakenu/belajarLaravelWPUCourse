@@ -10,7 +10,9 @@ Route::get('/', function () {
 });
 
 Route::get('/posts', function () {
-    $posts = Post::all();
+    // eager loading
+    $posts = Post::with(['author', 'category'])->latest()->get();
+    // $posts = Post::all();
     return view('posts', ['title' => 'Posts', 'posts' => $posts]);
 });
 
@@ -20,10 +22,14 @@ Route::get('/posts/{post:slug}', function (Post $post) {
 
 // route model binding
 Route::get('/authors/{user:username}', function (User $user) {
+    // lazy eager loading
+    // $posts = $user->posts->load('category', 'author');
     return view('posts', ['title' => count($user->posts) . ' Article by ' . $user->name, 'posts' => $user->posts]);
 });
 
 Route::get('/categories/{category:slug}', function (Category $category) {
+    // lazy eager loading
+    // $posts = $category->posts->load('category', 'author');
     return view('posts', ['title' => count($category->posts) . ' Titles in Category ' . $category->name, 'posts' => $category->posts]);
 });
 
